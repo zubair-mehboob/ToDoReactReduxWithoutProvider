@@ -5,34 +5,49 @@ import {
   toggleTaskActionCreator
 } from "../actions/task";
 import List from "./List";
+import { connect } from "react-redux";
 
 class Tasks extends Component {
-  addToDoTask = () => {
-    let task = document.getElementById("txt_task").value;
-    document.getElementById("txt_task").value = "";
-    this.props.dispatch(addTaskActionCreator(task));
-    //console.log(store.getState());
-  };
-
-  deleteTask = id => this.props.dispatch(deleteTaskActionCreator(id));
-  toggleTask = id => this.props.dispatch(toggleTaskActionCreator(id));
-
   render() {
+    console.log(this.props);
+
     return (
       <div>
         <h1>TASKS</h1>
         <input type="text" id="txt_task" placeholder="type task.." />
-        <button id="addToDo" onClick={this.addToDoTask}>
+        <button id="addToDo" onClick={this.props.addToDoTask}>
           Add Task
         </button>
         <List
           item={this.props.task}
-          toggle={this.toggleTask}
-          delete={this.deleteTask}
+          toggle={this.props.toggleTask}
+          delete={this.props.deleteTask}
         />
       </div>
     );
   }
 }
 
-export default Tasks;
+const mapStateToProps = state => {
+  return {
+    task: state.task
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    addToDoTask: () => {
+      let task = document.getElementById("txt_task").value;
+      document.getElementById("txt_task").value = "";
+      dispatch(addTaskActionCreator(task));
+      //console.log(store.getState());
+    },
+
+    deleteTask: id => dispatch(deleteTaskActionCreator(id)),
+    toggleTask: id => dispatch(toggleTaskActionCreator(id))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Tasks);
